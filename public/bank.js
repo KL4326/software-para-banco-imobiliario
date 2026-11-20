@@ -49,13 +49,15 @@ function renderCreate() {
   const pass = h('input', { maxlength: 40, autocomplete: 'off', placeholder: 'Ex.: 1234' });
   const initial = moneyInput();
   initial.set(2558000 * 100);
+  const salary = moneyInput();
+  salary.set(200000 * 100);
   const btn = h('button', { class: 'btn btn-primary btn-block btn-big' }, 'Criar partida');
   app.replaceChildren(h('div', { class: 'wrap' }, h('form', { class: 'create panel col', onsubmit: async (e) => {
     e.preventDefault();
     err.textContent = '';
     btn.disabled = true;
     try {
-      await api('/api/bank/create', { method: 'POST', body: { name: name.value, password: pass.value, initialBalance: initial.cents } });
+      await api('/api/bank/create', { method: 'POST', body: { name: name.value, password: pass.value, initialBalance: initial.cents, salary: salary.cents } });
       await load();
     } catch (ex) {
       err.textContent = ex.message;
@@ -67,6 +69,7 @@ function renderCreate() {
     h('label', { class: 'field' }, 'Nome da campanha', name),
     h('label', { class: 'field' }, 'Senha', pass),
     h('div', { class: 'field' }, h('b', { class: 'small' }, 'Saldo inicial de cada jogador'), initial.el),
+    h('div', { class: 'field' }, h('b', { class: 'small' }, 'Salário ao passar pelo início'), salary.el),
     err,
     btn)));
   setTimeout(() => name.focus(), 50);
@@ -98,7 +101,8 @@ function render() {
     h('dl', { class: 'kv' },
       h('dt', {}, 'Campanha'), h('dd', {}, state.name),
       h('dt', {}, 'Senha'), h('dd', {}, state.password),
-      h('dt', {}, 'Saldo inicial'), h('dd', {}, money(state.initialBalance))),
+      h('dt', {}, 'Saldo inicial'), h('dd', {}, money(state.initialBalance)),
+      h('dt', {}, 'Salário'), h('dd', {}, money(state.salary))),
     h('p', { class: 'muted small', style: { margin: 0 } }, 'Os celulares precisam estar no mesmo Wi-Fi deste notebook.'));
 
   const stats = h('div', { class: 'stats' },
@@ -135,6 +139,8 @@ function playerCard(p) {
   return h('div', { class: 'panel pcard', style: { '--pc': p.color } },
     h('div', { class: 'pcard-head' }, avatar(p), h('b', {}, p.name)),
     h('div', { class: 'pcard-bal' + (p.balance < 0 ? ' neg' : '') }, money(p.balance)),
+    state.salary > 0 ? h('button', { class: 'btn btn-block salary-btn', onclick: (e) => paySalary(p, e.currentTarget) },
+      '🏁 Salário ', money(state.salary)) : null,
     h('div', { class: 'pcard-actions' },
       h('button', { class: 'btn btn-primary', onclick: () => openAction('pay', [p.id]) }, 'Pagar'),
       h('button', { class: 'btn btn-danger', onclick: () => openAction('charge', [p.id]) }, 'Cobrar')),
@@ -222,6 +228,17 @@ function openAction(mode, ids) {
     !isPay ? h('p', { class: 'muted small', style: { margin: 0 } }, 'O valor sai do saldo do jogador na hora. Se ele não tiver dinheiro, fica negativo (devendo).') : null,
     err,
     btn));
+}
+
+async function paySalary(p, btn) {
+  btn.disabled = true;
+  try {
+    await api('/api/bank/pay', { method: 'POST', body: { playerId: p.id, amount: state.salary, description: 'Salário' } });
+    toast(`🏁 Salário de ${money(state.salary)} pago para ${p.name}`, 'success');
+  } catch (ex) {
+    toast(ex.message, 'error');
+    btn.disabled = false;
+  }
 }
 
 async function reverse(t) {

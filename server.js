@@ -16,6 +16,7 @@ const DATA_DIR = path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'partida.json');
 
 const DEFAULT_INITIAL_BALANCE = 2558000 * 100; // em centavos
+const DEFAULT_SALARY = 200000 * 100; // salário ao passar pelo início
 const MAX_AMOUNT = 1e15; // limite de segurança (centavos)
 
 // ---------------------------------------------------------------------------
@@ -496,6 +497,7 @@ async function api(req, res, url) {
         name: game.name,
         password: game.password,
         initialBalance: game.initialBalance,
+        salary: game.salary ?? DEFAULT_SALARY,
         createdAt: game.createdAt,
         addresses: lanAddresses(),
         port: PORT,
@@ -517,10 +519,15 @@ async function api(req, res, url) {
       if (!Number.isInteger(initial) || initial < 0 || initial > MAX_AMOUNT) {
         throw new HttpError(400, 'Saldo inicial inválido.');
       }
+      const salary = b.salary === undefined ? DEFAULT_SALARY : Number(b.salary);
+      if (!Number.isInteger(salary) || salary < 0 || salary > MAX_AMOUNT) {
+        throw new HttpError(400, 'Salário inválido.');
+      }
       game = {
         name,
         password,
         initialBalance: initial,
+        salary,
         createdAt: Date.now(),
         players: [],
         transactions: [],

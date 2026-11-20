@@ -34,7 +34,7 @@ Jogadores (celulares no mesmo Wi-Fi):   http://192.168.0.15:3000
 
 ### 2. Criar a campanha
 
-No notebook, abra **http://localhost:3000/banco**, dê um nome para a campanha e crie uma senha. O saldo inicial já vem com **R$ 2.558.000**, mas dá para mudar.
+No notebook, abra **http://localhost:3000/banco**, dê um nome para a campanha e crie uma senha. O saldo inicial já vem com **R$ 2.558.000** e o salário com **R$ 200.000**, mas dá para mudar os dois.
 
 ### 3. Jogadores entram
 
@@ -47,6 +47,7 @@ No celular, aponte a câmera para o QR Code que aparece no painel do Banco, digi
 | Quem **recebe** | Toca em **Receber**, digita o valor e toca em **Gerar cobrança**. A tela mostra o QR e o código. |
 | Quem **paga** | Aponta a **câmera do celular** para o QR **ou** toca em **Pagar** e digita o código de 4 dígitos. Confere e toca em **Confirmar pagamento**. |
 | Pagar ao **Banco** | **Pagar → Transferir direto → Banco**. |
+| Passou pelo **início** | No notebook, o Banco toca em **🏁 Salário** no cartão do jogador (paga R$ 200.000 com um toque). |
 | O **Banco** | No notebook: **Pagar** ou **Cobrar** em cada jogador, **Pagar a todos** e **Estornar** uma transação errada. |
 
 ## Dicas e problemas comuns

@@ -1,0 +1,14 @@
+{
+  "name": "banco-imobiliario-digital",
+  "version": "1.0.0",
+  "description": "Cartão digital e maquininha para jogar Banco Imobiliário pelo celular, com o notebook como Banco.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "private": true
+}
